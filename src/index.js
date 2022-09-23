@@ -67,8 +67,8 @@ function getCoverageBadge(pct) {
   return coverageBadge
 }
 
-function getCoverageFromReadme() {
-  const readmeFilename = path.join(process.cwd(), 'README.md')
+function getCoverageFromReadme(readmeDirectory = '') {
+  const readmeFilename = path.join(process.cwd(), readmeDirectory, 'README.md')
   debug('reading the README from %s', readmeFilename)
   const readmeText = fs.readFileSync(readmeFilename, 'utf8')
   return getCoverageFromText(readmeText)

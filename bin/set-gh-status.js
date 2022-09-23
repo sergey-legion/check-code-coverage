@@ -8,8 +8,9 @@ const {readCoverage, toPercent, badge} = require('..')
 const arg = require('arg')
 
 const args = arg({
-  '--from': String, // input json-summary filename, by default "coverage/coverage-summary.json"
-  '--check-against-readme': Boolean
+  '--from': String, // input json-summary filename, by default "coverage/coverage-summary.json",
+  '--readme-directory': String,
+  '--check-against-readme': Boolean,
 })
 debug('args: %o', args)
 
@@ -49,7 +50,7 @@ async function setGitHubCommitStatus(options, envOptions) {
   console.log('response status: %d %s', res.statusCode, res.statusMessage)
 
   if (options.checkAgainstReadme) {
-    const readmePercent = badge.getCoverageFromReadme()
+    const readmePercent = badge.getCoverageFromReadme(options.readmeDirectory)
     if (typeof readmePercent !== 'number') {
       console.error('Could not get code coverage percentage from README')
       console.error('readmePercent is', readmePercent)
@@ -123,7 +124,8 @@ debug('GH env variables: GITHUB_REPOSITORY %s GH_SHA %s GITHUB_SHA %s',
 
 const options = {
   filename: args['--file'],
-  checkAgainstReadme: args['--check-against-readme']
+  checkAgainstReadme: args['--check-against-readme'],
+  readmeDirectory: args['--readme-directory'],
 }
 const envOptions = {
   token: process.env.GITHUB_TOKEN,
