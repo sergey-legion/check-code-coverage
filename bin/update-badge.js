@@ -10,7 +10,8 @@ const {readCoverage, toPercent, badge} = require('..')
 
 const args = arg({
   '--from': String, // input json-summary filename, by default "coverage/coverage-summary.json"
-  '--set': String // so we can convert "78%" into numbers ourselves
+  '--set': String, // so we can convert "78%" into numbers ourselves
+  '--readme-directory': String,
 })
 debug('args: %o', args)
 
@@ -26,7 +27,7 @@ function updateBadge(args) {
   pct = toPercent(pct)
   debug('clamped coverage: %d', pct)
 
-  const readmeFilename = path.join(process.cwd(), 'README.md')
+  const readmeFilename = path.join(process.cwd(), args['--readme-directory'] || '',  'README.md')
   const readmeText = fs.readFileSync(readmeFilename, 'utf8')
 
   function replaceShield() {
