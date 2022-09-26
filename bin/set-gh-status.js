@@ -71,7 +71,15 @@ async function setGitHubCommitStatus(options, envOptions) {
         }
       })
     } else if (Math.abs(pct - readmePercent) < 1) {
-      console.log('coverage stayed the same %d% ~ %d%', readmePercent, pct)
+      const isSame = pct === readmePercent
+      const wentDown = pct < readmePercent
+
+      const description = isSame
+          ? `coverage stayed the same ${pct}%`
+          : `coverage slightly went ${wentDown ? 'down' : 'up'}, from ${readmePercent}% to ${pct}%`
+
+      console.log(description)
+
       // @ts-ignore
       await got.post(url, {
         headers: {
@@ -80,7 +88,7 @@ async function setGitHubCommitStatus(options, envOptions) {
         json: {
           context: 'code-coverage Δ',
           state: 'success',
-          description: `stayed the same at ${pct}%`
+          description
         }
       })
     } else {
